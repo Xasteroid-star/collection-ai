@@ -6,12 +6,12 @@ import re
 import html as html_parser
 
 all_projects = []
+headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Content-Type': 'application/json'
+    }
+url='https://summer-ospp.ac.cn/api/getProList'
 def get_projects():
-    headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Content-Type': 'application/json'
-        }
-    url='https://summer-ospp.ac.cn/api/getProList'
     for page_num in range(1, 13):  # 假设最多12页
         print(f"正在获取第 {page_num} 页...")
         payload = {
@@ -65,15 +65,11 @@ def extract_project_details(projects):
             tech_tag_string = project['techTag']
             tech_tag_list = json.loads(tech_tag_string)
             technology_domains = [tag_pair[1] for tag_pair in tech_tag_list]
-            headers2 = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0",
-                "cookie": "tgt=1761145398.957.797.37771|2125b4d7ab6829ae59e8509cd0133f66; UM_distinctid=19a0c7223d5181c-05dc6c7c84342c-4c657b58-168000-19a0c7223d6182"
-            }
             data = {
                 "programId": project_id,
                 "type": 'org' 
             }
-            response2 = requests.post('https://summer-ospp.ac.cn/api/getProDetail', json=data, headers=headers2)
+            response2 = requests.post('https://summer-ospp.ac.cn/api/getProDetail', json=data, headers=headers)
             if response2.status_code == 200:
                 detail_data = response2.json()
                 program_desc_html = detail_data.get('programDesc', '')
